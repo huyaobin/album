@@ -57,17 +57,19 @@ int wait4touch(int ts)
 			if(buf.code == ABS_X)	
 			{
 				action = buf.value >= 400 ? NEXT : PREV;
-				printf("x:%d\n",buf.value);
-				return action;
 			}
+
 		}
-		if(buf.type == EV_ABS)
+		if(buf.type == EV_KEY)
 		{
 			if(buf.code == BTN_TOUCH && buf.value == 0)	
 				break;
 		}
 
 	}
+
+		printf("x:%d\n",action);
+		return action;
 }
 
 char *init_lcd(struct fb_var_screeninfo *pvinfo)
