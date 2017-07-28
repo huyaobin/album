@@ -42,7 +42,7 @@ struct imginfo
 };
 
 
-
+/*
 int wait4touch(int ts)
 {
 	struct input_event buf;
@@ -71,6 +71,40 @@ int wait4touch(int ts)
 		printf("x:%d\n",action);
 		return action;
 }
+*/
+int wait4touch(int ts)
+{
+	struct input_event buf;
+	int action;
+	int sta;
+	int end;
+	int set = 0;
+
+	while(1)
+	{
+		read(ts,&buf,sizeof(buf));
+		
+		if(buf.type == EV_ABS)	
+		{
+			if(buf.code == ABS_X)	
+			{
+				if(set == 0)	
+				{
+					sta = buf.value;
+					set = 1;
+				}
+				end = buf.value;
+			}
+		}
+		if(buf.type == EV_KEY)
+		{
+			if(buf.code == BTN_TOUCH && buf.value == 0)
+				break;
+		}
+	}
+	return action = (sta - end)>0 ? PREV : NEXT;
+}
+
 
 char *init_lcd(struct fb_var_screeninfo *pvinfo)
 {
