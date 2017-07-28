@@ -46,26 +46,28 @@ struct imginfo
 int wait4touch(int ts)
 {
 	struct input_event buf;
-
+	
 	int action;
 	while(1)
 	{
 		read(ts,&buf,sizeof(buf));
-
+	
 		if(buf.type == EV_ABS)
 		{
 			if(buf.code == ABS_X)	
 			{
 				action = buf.value >= 400 ? NEXT : PREV;
+				printf("x:%d\n",buf.value);
+				return action;
 			}
 		}
-		if(buf.type == EV_KEY)
+		if(buf.type == EV_ABS)
 		{
 			if(buf.code == BTN_TOUCH && buf.value == 0)	
 				break;
 		}
+
 	}
-	return action;
 }
 
 char *init_lcd(struct fb_var_screeninfo *pvinfo)
@@ -98,7 +100,6 @@ void write_lcd(unsigned char *fbmem,struct fb_var_screeninfo *pvinfo,
 {
 	int x,y;
 	fbmem += (yoffset*pvinfo->yres +xoffset) * 4;
-	//rgb_buffer+= (3*imageinfo->width*xoffset);
 	for(y=0;y<imageinfo->height && y<pvinfo->yres-yoffset;y++)
 	{
 		for(x=0;x<imageinfo->width && x<pvinfo->xres-xoffset;x++)	
@@ -332,7 +333,6 @@ int main(int argc,char **argv)
 			jpg = show_jpg(jpg,action,fbmem,&vinfo,a,b);
 			action = wait4touch(ts);
 		}
-		
 	}
 
 	else if(S_ISREG(fileinfo.st_mode))
