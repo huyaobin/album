@@ -135,7 +135,9 @@ void write_lcd(unsigned char *fbmem,struct fb_var_screeninfo *pvinfo,
 		unsigned char *rgb_buffer,struct imginfo *imageinfo,int xoffset,int yoffset)
 {
 	int x,y;
-	bzero(fbmem,sizeof(fbmem));
+	
+	bzero(fbmem, pvinfo->xres * pvinfo->yres * pvinfo->bits_per_pixel/8);
+
 	fbmem += (yoffset*pvinfo->yres +xoffset) * 4;
 	for(y=0;y<imageinfo->height && y<pvinfo->yres-yoffset;y++)
 	{
